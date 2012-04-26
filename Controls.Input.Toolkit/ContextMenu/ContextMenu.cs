@@ -316,8 +316,19 @@ namespace System.Windows.Controls
                 _rootVisual = Application.Current.RootVisual as FrameworkElement;
                 if (null != _rootVisual)
                 {
-                    // Ideally, this would use AddHandler(MouseMoveEvent), but MouseMoveEvent doesn't exist
-                    _rootVisual.MouseMove += new MouseEventHandler(HandleRootVisualMouseMove);
+                    var rootVisual = _rootVisual;
+                    // Use a weak event listener.
+                    var rootVisualMouseMoveListener = new WeakEventListener<ContextMenu, object, MouseEventArgs>(this)
+                                                          {
+                                                              OnEventAction =
+                                                                  (instance, source, eventArgs) =>
+                                                                  instance.HandleRootVisualMouseMove(source, eventArgs),
+                                                              OnDetachAction =
+                                                                  (weakEventListener) =>
+                                                                  rootVisual.MouseMove -= weakEventListener.OnEvent
+                                                          };
+
+                    rootVisual.MouseMove += rootVisualMouseMoveListener.OnEvent;
                 }
             }
         }

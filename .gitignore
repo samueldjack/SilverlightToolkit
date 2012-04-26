@@ -3,3 +3,5 @@ obj/
 ClientBin/
 bin/
 *.suo
+_Resharper
+_Resharper*
