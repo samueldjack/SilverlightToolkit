@@ -1,0 +1,5 @@
+Binaries/
+obj/
+ClientBin/
+bin/
+*.suo
